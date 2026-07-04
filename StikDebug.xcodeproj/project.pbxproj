@@ -236,10 +236,10 @@
 				};
 			};
 			buildConfigurationList = DC6F1D322D94EADD0071B2B6 /* Build configuration list for PBXProject "StikDebug" */;
-			developmentRegion = en;
+			developmentRegion = zh-Hans;
 			hasScannedForEncodings = 0;
 			knownRegions = (
-				en,
+				zh-Hans,
 				Base,
 				es,
 				it,
