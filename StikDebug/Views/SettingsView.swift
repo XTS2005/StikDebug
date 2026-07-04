@@ -11,6 +11,7 @@ private enum SettingsLinks {
     static let pairingFileGuide = URL(string: "https://github.com/StephenDev0/StikDebug-Guide/blob/main/pairing_file.md")!
     static let localDevVPN = URL(string: "https://apps.apple.com/us/app/localdevvpn/id6755608044")!
     static let discord = URL(string: "https://discord.gg/qahjXNTDwS")!
+    static let fumeng = URL(string: "http://www.coolapk.com/u/30819340")!
 }
 
 struct SettingsView: View {
@@ -55,7 +56,7 @@ struct SettingsView: View {
 
                 Section {
                     Link(destination: SettingsLinks.githubStars) {
-                        Label("Star on GitHub", systemImage: "star")
+                        Label("GitHub 收藏", systemImage: "star")
                     }
                 }
 
@@ -168,6 +169,9 @@ struct SettingsView: View {
                     }
                     Link(destination: SettingsLinks.discord) {
                         Label("Discord 支持", systemImage: "bubble.left.and.bubble.right")
+                    }
+                    Link(destination: SettingsLinks.fumeng) {
+                        Label("浮梦往事", systemImage: "translate")
                     }
                 }
 
