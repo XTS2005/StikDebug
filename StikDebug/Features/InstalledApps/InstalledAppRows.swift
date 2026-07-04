@@ -84,7 +84,7 @@ struct AppButton: View {
             Button {
                 copyBundleID()
             } label: {
-                Label("复制 Bundle ID", systemImage: "doc.on.doc")
+                Label("复制包名 ID", systemImage: "doc.on.doc")
             }
             if enableAdvancedOptions {
                 Button {
@@ -129,19 +129,19 @@ struct AppButton: View {
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(String(format: "为 %@ 启用 JIT".localized, appName))
         .accessibilityValue(accessibilityValue)
-        .accessibilityHint("双击以打开应用并启用 JIT。使用操作转子进行收藏或复制 Bundle ID。".localized)
+        .accessibilityHint("双击以打开应用并启用 JIT。使用操作转子进行收藏或复制包名 ID。".localized)
         .accessibilityAddTraits(.isButton)
         .accessibilityRemoveTraits(.isStaticText)
         .accessibilityAction(named: Text(favoriteAccessibilityActionLabel)) {
             toggleFavorite()
         }
-        .accessibilityAction(named: Text("复制 Bundle ID".localized)) {
+        .accessibilityAction(named: Text("复制包名 ID".localized)) {
             copyBundleID()
         }
     }
 
     private var accessibilityValue: String {
-        var parts = [String(format: "Bundle ID %@".localized, bundleID)]
+        var parts = [String(format: "包名 ID %@".localized, bundleID)]
         if favoriteApps.contains(bundleID) {
             parts.append("已收藏".localized)
         }
@@ -196,7 +196,7 @@ struct AppButton: View {
     private func copyBundleID() {
         UIPasteboard.general.string = bundleID
         Haptics.light()
-        AccessibilityAnnouncer.announce("Bundle ID 已复制".localized)
+        AccessibilityAnnouncer.announce("包名 ID 已复制".localized)
     }
 
     private func assignScript(_ url: URL?) {
@@ -321,7 +321,7 @@ struct LaunchAppRow: View {
 
     private var accessibilityValue: String {
         let state = isLaunching ? "正在启动".localized : "就绪".localized
-        return "\(state)，\(String(format: "Bundle ID %@".localized, bundleID))"
+        return "\(state)，\(String(format: "包名 ID %@".localized, bundleID))"
     }
 
     private func beginIconLoadingIfNeeded() {

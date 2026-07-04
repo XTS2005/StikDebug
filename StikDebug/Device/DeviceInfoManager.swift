@@ -228,7 +228,7 @@ struct DeviceInfoView: View {
                 }
             }
             .alert(alertTitle, isPresented: $alert) {
-                Button("OK", role: .cancel) { }
+                Button("确定", role: .cancel) { }
             } message: {
                 Text(alertMsg)
             }

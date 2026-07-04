@@ -149,7 +149,7 @@ private func tunnelConnectionAlertMessage(for error: NSError) -> String {
     if error.code == 48 || lowercasedMessage.contains("address already in use") || lowercasedMessage.contains("port already in use") {
         likelyCause = "隧道所需的端口已被占用。"
         recoverySteps = [
-            "关闭可能正在使用隧道的其他 JIT、调试、代理或 VPN 应用。",
+            "关闭可能正在使用隧道的其它 JIT、调试、代理或 VPN 应用。",
             "断开并重新连接 LocalDevVPN。",
             "重启 StikDebug，然后重试。",
             "如果问题持续存在，请重启设备以清除被占用的端口。"
@@ -173,7 +173,7 @@ private func tunnelConnectionAlertMessage(for error: NSError) -> String {
         recoverySteps = [
             "确认 Wi-Fi 和 LocalDevVPN 均已连接。",
             "唤醒并解锁目标设备。",
-            "确认 LocalDevVPN 在 \(targetIP) 暴露了设备。"
+            "确认 LocalDevVPN 在 \(targetIP) 开放设备访问。"
         ]
     } else if lowercasedMessage.contains("network is unreachable") || lowercasedMessage.contains("no route") {
         likelyCause = "到设备的 VPN 路由不可用。"

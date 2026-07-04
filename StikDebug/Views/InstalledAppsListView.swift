@@ -210,7 +210,7 @@ struct InstalledAppsListView: View {
                     systemImage: snapshot.searchIsActive ? "text.magnifyingglass" : "magnifyingglass",
                     title: snapshot.searchIsActive ? "未找到匹配的应用".localized : "未找到 JIT 应用".localized,
                     message: snapshot.searchIsActive
-                        ? "尝试不同的名称或 Bundle ID。".localized
+                        ? "尝试不同的名称或包名 ID。".localized
                         : "StikDebug 只能连接具有 \"get-task-allow\" 权限的应用。".localized
                 )
             } else {
@@ -231,7 +231,7 @@ struct InstalledAppsListView: View {
                     systemImage: "magnifyingglass",
                     title: snapshot.searchIsActive ? "未找到匹配".localized : "未找到应用".localized,
                     message: snapshot.searchIsActive
-                        ? "尝试其他名称或 Bundle ID。".localized
+                        ? "尝试其它名称或包名 ID。".localized
                         : "导入配对文件并连接 CoreDevice 后，所有应用将在此显示。".localized
                 )
             } else {
@@ -309,7 +309,7 @@ struct InstalledAppsListView: View {
                            systemImage: isPinned ? "star.slash" : "star") {
                         toggleSystemPin(bundleID: app.bundleID, appName: app.name)
                     }
-                    Button("复制 Bundle ID".localized, systemImage: "doc.on.doc") {
+                    Button("复制包名 ID".localized, systemImage: "doc.on.doc") {
                         UIPasteboard.general.string = app.bundleID
                         Haptics.light()
                     }
@@ -509,7 +509,7 @@ private enum AppListTab: Int, CaseIterable, Identifiable {
         case .debuggable:
             return "JIT"
         case .launch:
-            return "其他"
+            return "其它"
         }
     }
 
@@ -525,7 +525,7 @@ private enum AppListTab: Int, CaseIterable, Identifiable {
     var searchPrompt: String {
         switch self {
         case .debuggable:
-            return "搜索应用或 Bundle ID".localized
+            return "搜索应用或包名 ID".localized
         case .launch:
             return "搜索".localized
         }

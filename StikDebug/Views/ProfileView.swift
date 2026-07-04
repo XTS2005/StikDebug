@@ -216,7 +216,7 @@ struct ProfileView: View {
                 }
                 
                 if !notMatchedProfiles.isEmpty {
-                    Section("其他配置文件") {
+                    Section("其它配置文件") {
                         ForEach(notMatchedProfiles) { entry in
                             VStack(alignment: .leading) {
                                 Text(entry.id)
