@@ -52,7 +52,7 @@ struct HomeView: View {
             handleExternalURL(url)
         }
         .confirmationDialog(
-            pendingExternalURLAction?.title ?? "External Request",
+            pendingExternalURLAction?.title ?? "外部请求",
             isPresented: Binding(
                 get: { pendingExternalURLAction != nil },
                 set: { isPresented in
@@ -68,7 +68,7 @@ struct HomeView: View {
                 performExternalURLAction(action)
                 pendingExternalURLAction = nil
             }
-            Button("Cancel", role: .cancel) {
+            Button("取消", role: .cancel) {
                 pendingExternalURLAction = nil
             }
         } message: { action in
@@ -84,7 +84,7 @@ struct HomeView: View {
                 RunJSView(model: model)
                     .toolbar {
                         ToolbarItem(placement: .topBarTrailing) {
-                            Button("Done") { scriptRunModel = nil }
+                            Button("完成") { scriptRunModel = nil }
                         }
                     }
                     .navigationBarTitleDisplayMode(.inline)
@@ -275,15 +275,15 @@ struct HomeView: View {
             } catch {
                 semaphore.signal()
                 DispatchQueue.main.async {
-                    showAlert(title: "Error Occurred While Executing Script.".localized, message: error.localizedDescription, showOk: true)
+                    showAlert(title: "执行脚本时发生错误。".localized, message: error.localizedDescription, showOk: true)
                 }
             }
         }
     }
 
     private func startJITInBackground(bundleID: String? = nil, pid: Int? = nil, scriptData: Data? = nil, scriptName: String? = nil, triggeredByURLScheme: Bool = false, displayName: String? = nil) {
-        let targetName = displayName ?? bundleID ?? pid.map { String(format: "process %d".localized, $0) } ?? "app".localized
-        let startingMessage = String(format: "Starting JIT for %@".localized, targetName)
+        let targetName = displayName ?? bundleID ?? pid.map { String(format: "进程 %d".localized, $0) } ?? "应用".localized
+        let startingMessage = String(format: "正在为 %@ 启动 JIT".localized, targetName)
         LogManager.shared.addInfoLog("Starting Debug for \(bundleID ?? String(pid ?? 0))")
         withAnimation {
             debugFeedback = DebugFeedback(message: startingMessage, isError: false, isWorking: true)
@@ -306,8 +306,8 @@ struct HomeView: View {
             let finishProcessing: (Bool, String?) -> Void = { success, detail in
                 DispatchQueue.main.async {
                     let message = success
-                        ? String(format: "JIT request completed for %@".localized, targetName)
-                        : String(format: "JIT failed for %@".localized, targetName)
+                        ? String(format: "JIT 请求已完成".localized, targetName)
+                        : String(format: "JIT 请求失败".localized, targetName)
                     let feedback = DebugFeedback(message: message, isError: !success, isWorking: false)
                     withAnimation {
                         debugFeedback = feedback
@@ -323,8 +323,8 @@ struct HomeView: View {
                     }
 
                     if !success {
-                        let failureMessage = detail ?? "StikDebug could not launch or attach to the selected app. Check that the VPN is enabled, the pairing file is current, and the app is still installed.".localized
-                        showAlert(title: "Failed to Enable JIT".localized, message: failureMessage, showOk: true)
+                        let failureMessage = detail ?? "StikDebug 无法启动或附加到所选应用。请检查 VPN 是否已启用、配对文件是否有效，以及应用是否仍然安装。".localized
+                        showAlert(title: "启用 JIT 失败".localized, message: failureMessage, showOk: true)
                     }
                 }
             }
@@ -356,7 +356,7 @@ struct HomeView: View {
             } else if let bundleID {
                 success = JITEnableContext.shared.debugApp(withBundleID: bundleID, logger: logger, jsCallback: callback)
             } else {
-                lastDebugMessage = "Either bundle ID or PID should be specified.".localized
+                lastDebugMessage = "需要指定 Bundle ID 或 PID。".localized
                 success = false
             }
 

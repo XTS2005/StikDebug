@@ -76,7 +76,7 @@ struct AppButton: View {
         .contextMenu {
             Button(action: toggleFavorite) {
                 Label(
-                    favoriteApps.contains(bundleID) ? "Remove Favorite" : "Add to Favorites",
+                    favoriteApps.contains(bundleID) ? "移除收藏" : "添加到收藏",
                     systemImage: favoriteApps.contains(bundleID) ? "star.slash" : "star"
                 )
                 .disabled(!favoriteApps.contains(bundleID) && favoriteApps.count >= 4)
@@ -84,18 +84,18 @@ struct AppButton: View {
             Button {
                 copyBundleID()
             } label: {
-                Label("Copy Bundle ID", systemImage: "doc.on.doc")
+                Label("复制 Bundle ID", systemImage: "doc.on.doc")
             }
             if enableAdvancedOptions {
                 Button {
                     showScriptPicker = true
                 } label: {
-                    Label("Assign Script", systemImage: "chevron.left.slash.chevron.right")
+                    Label("分配脚本", systemImage: "chevron.left.slash.chevron.right")
                 }
 
                 if assignedScriptName != nil {
                     Button(action: resetScriptAssignment) {
-                        Label("Reset Script", systemImage: "arrow.uturn.left")
+                        Label("重置脚本", systemImage: "arrow.uturn.left")
                     }
                 }
             }
@@ -104,14 +104,14 @@ struct AppButton: View {
             Button {
                 toggleFavorite()
             } label: {
-                Label(favoriteApps.contains(bundleID) ? "Unfavorite" : "Favorite", systemImage: "star")
+                Label(favoriteApps.contains(bundleID) ? "取消收藏" : "收藏", systemImage: "star")
             }
             .tint(.yellow)
 
             Button {
                 copyBundleID()
             } label: {
-                Label("Copy ID", systemImage: "doc.on.doc")
+                Label("复制 ID", systemImage: "doc.on.doc")
             }
         }
         .sheet(isPresented: $showScriptPicker) {
@@ -127,15 +127,15 @@ struct AppButton: View {
             }
         }
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel(String(format: "Enable JIT for %@".localized, appName))
+        .accessibilityLabel(String(format: "为 %@ 启用 JIT".localized, appName))
         .accessibilityValue(accessibilityValue)
-        .accessibilityHint("Double-tap to open the app and enable JIT. Use the actions rotor for favorites or bundle ID.".localized)
+        .accessibilityHint("双击以打开应用并启用 JIT。使用操作转子进行收藏或复制 Bundle ID。".localized)
         .accessibilityAddTraits(.isButton)
         .accessibilityRemoveTraits(.isStaticText)
         .accessibilityAction(named: Text(favoriteAccessibilityActionLabel)) {
             toggleFavorite()
         }
-        .accessibilityAction(named: Text("Copy Bundle ID".localized)) {
+        .accessibilityAction(named: Text("复制 Bundle ID".localized)) {
             copyBundleID()
         }
     }
@@ -143,18 +143,18 @@ struct AppButton: View {
     private var accessibilityValue: String {
         var parts = [String(format: "Bundle ID %@".localized, bundleID)]
         if favoriteApps.contains(bundleID) {
-            parts.append("Favorite".localized)
+            parts.append("已收藏".localized)
         }
         if let assignedScriptName {
-            parts.append(String(format: "Assigned script %@".localized, assignedScriptName))
+            parts.append(String(format: "已分配脚本 %@".localized, assignedScriptName))
         }
         return parts.joined(separator: ", ")
     }
 
     private var favoriteAccessibilityActionLabel: String {
         favoriteApps.contains(bundleID)
-            ? "Remove from Favorites".localized
-            : "Add to Favorites".localized
+            ? "移出收藏".localized
+            : "添加到收藏".localized
     }
 
     private func beginIconLoadingIfNeeded() {
@@ -185,18 +185,18 @@ struct AppButton: View {
             favoriteApps.insert(bundleID, at: 0)
             recentApps.removeAll { $0 == bundleID }
         } else {
-            AccessibilityAnnouncer.announce("Favorites are full".localized)
+            AccessibilityAnnouncer.announce("收藏已满".localized)
             return
         }
 
         persistIfChanged()
-        AccessibilityAnnouncer.announce(wasFavorite ? "Removed from Favorites".localized : "Added to Favorites".localized)
+        AccessibilityAnnouncer.announce(wasFavorite ? "已移出收藏".localized : "已添加到收藏".localized)
     }
 
     private func copyBundleID() {
         UIPasteboard.general.string = bundleID
         Haptics.light()
-        AccessibilityAnnouncer.announce("Bundle ID copied".localized)
+        AccessibilityAnnouncer.announce("Bundle ID 已复制".localized)
     }
 
     private func assignScript(_ url: URL?) {
@@ -286,7 +286,7 @@ struct LaunchAppRow: View {
                 if isLaunching {
                     ProgressView().controlSize(.small)
                 } else {
-                    Text("Launch".localized)
+                    Text("启动".localized)
                         .font(.footnote.weight(.semibold))
                         .padding(.horizontal, 12)
                         .padding(.vertical, 6)
@@ -306,22 +306,22 @@ struct LaunchAppRow: View {
             }
         }
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel(String(format: "Launch %@".localized, appName))
+        .accessibilityLabel(String(format: "启动 %@".localized, appName))
         .accessibilityValue(accessibilityValue)
         .accessibilityHint(isLaunching
-                           ? "Launch request in progress.".localized
-                           : "Double-tap to launch this app without enabling JIT.".localized)
+                           ? "启动请求正在进行中。".localized
+                           : "双击以启动此应用而不启用 JIT。".localized)
         .accessibilityAddTraits(.isButton)
         .accessibilityRemoveTraits(.isStaticText)
-        .accessibilityAction(named: Text("Launch App".localized)) {
+        .accessibilityAction(named: Text("启动应用".localized)) {
             guard !isLaunching else { return }
             launchAction()
         }
     }
 
     private var accessibilityValue: String {
-        let state = isLaunching ? "Launching".localized : "Ready".localized
-        return "\(state), \(String(format: "Bundle ID %@".localized, bundleID))"
+        let state = isLaunching ? "正在启动".localized : "就绪".localized
+        return "\(state)，\(String(format: "Bundle ID %@".localized, bundleID))"
     }
 
     private func beginIconLoadingIfNeeded() {

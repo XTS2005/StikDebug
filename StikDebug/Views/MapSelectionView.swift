@@ -357,9 +357,9 @@ private enum CoordinateImportError: LocalizedError {
     var errorDescription: String? {
         switch self {
         case .emptyFile:
-            return "The selected file is empty."
+            return "所选文件为空。"
         case .noCoordinates:
-            return "No valid coordinates were found. Use GPX, GeoJSON, JSON, CSV, or plain text with latitude and longitude values."
+            return "未找到有效坐标。请使用 GPX、GeoJSON、JSON、CSV 或包含纬度和经度值的纯文本。"
         }
     }
 }
@@ -819,23 +819,23 @@ struct LocationSimulationView: View {
 
     private var routeStatusText: String {
         if isLoadingRoute {
-            return "Calculating route…"
+            return "计算路线中…"
         }
         if isPrefetchingRouteSpeeds {
-            return "Prefetching road speeds…"
+            return "正在预取道路速度…"
         }
         if routePlan != nil {
-            return "Route ready."
+            return "路线已就绪。"
         }
         if routeStartSelection != nil || routeEndSelection != nil {
-            return "Pick both route endpoints to build the drive."
+            return "选择两个路线端点以构建驾驶路线。"
         }
-        return "Plan a route from the toolbar."
+        return "从工具栏规划路线。"
     }
 
     private var routeAttributionLink: some View {
         Link(
-            "Speed limit data © OpenStreetMap contributors (ODbL)",
+            "速度限制数据 © OpenStreetMap 贡献者 (ODbL)",
             destination: OpenStreetMapSpeedLimitService.copyrightURL
         )
         .font(.caption2)
@@ -885,19 +885,19 @@ struct LocationSimulationView: View {
                                 .stroke(.blue.opacity(0.8), lineWidth: 5)
                         }
                         if let routeStartCoordinate {
-                            Marker("Start", coordinate: routeStartCoordinate)
+                            Marker("起点", coordinate: routeStartCoordinate)
                                 .tint(.green)
                         }
                         if let routeEndCoordinate {
-                            Marker("End", coordinate: routeEndCoordinate)
+                            Marker("终点", coordinate: routeEndCoordinate)
                                 .tint(.red)
                         }
                         if let routePlaybackCoordinate {
-                            Marker("Current", coordinate: routePlaybackCoordinate)
+                            Marker("当前位置", coordinate: routePlaybackCoordinate)
                                 .tint(.blue)
                         }
                     } else if let coordinate {
-                        Marker("Pin", coordinate: coordinate)
+                        Marker("大头针", coordinate: coordinate)
                             .tint(.red)
                     }
                 }
@@ -933,7 +933,7 @@ struct LocationSimulationView: View {
 
                 VStack(spacing: 12) {
                     if isImportingCoordinates {
-                        ProgressView("Importing coordinates…")
+                        ProgressView("正在导入坐标…")
                             .font(.footnote)
                     }
 
@@ -970,10 +970,10 @@ struct LocationSimulationView: View {
                     Image(systemName: "square.and.arrow.down")
                 }
                 .disabled(isBusy || isRouteRunning || isImportingCoordinates)
-                .accessibilityLabel("Import Coordinates")
+                .accessibilityLabel("导入坐标")
             }
             ToolbarItem(placement: .topBarTrailing) {
-                TextField("Search location...", text: $searchText)
+                TextField("搜索位置…", text: $searchText)
                     .padding(.leading, 6)
                     .autocorrectionDisabled()
                     .submitLabel(.go)
@@ -986,16 +986,16 @@ struct LocationSimulationView: View {
             }
         }
         .alert(alertTitle, isPresented: $showAlert) {
-            Button("OK", role: .cancel) { }
+            Button("确定", role: .cancel) { }
         } message: {
             Text(alertMessage)
         }
-        .alert("Save Bookmark", isPresented: $showSaveBookmark) {
-            TextField("Name", text: $newBookmarkName)
-            Button("Save") { addBookmark() }
-            Button("Cancel", role: .cancel) { newBookmarkName = "" }
+        .alert("保存书签", isPresented: $showSaveBookmark) {
+            TextField("名称", text: $newBookmarkName)
+            Button("保存") { addBookmark() }
+            Button("取消", role: .cancel) { newBookmarkName = "" }
         } message: {
-            Text("Enter a name for this location.")
+            Text("为位置输入名称。")
         }
         .sheet(isPresented: $showBookmarks) {
             BookmarksView(bookmarks: $bookmarks) { bookmark in
@@ -1100,7 +1100,7 @@ struct LocationSimulationView: View {
 
         searchText = ""
         searchCompleter.results = []
-        applyImportedCoordinates(importedCoordinates, sourceName: "Imported")
+        applyImportedCoordinates(importedCoordinates, sourceName: "已导入")
     }
 
     private func importCoordinates(_ result: Result<[URL], Error>) {
@@ -1120,7 +1120,7 @@ struct LocationSimulationView: View {
                         isImportingCoordinates = false
                         applyImportedCoordinates(
                             coordinates,
-                            sourceName: sourceName.isEmpty ? "Imported" : sourceName
+                            sourceName: sourceName.isEmpty ? "已导入" : sourceName
                         )
                     }
                 } catch {
@@ -1177,8 +1177,8 @@ struct LocationSimulationView: View {
 
         let distance = distanceAlong(displayCoordinates)
         let fallbackSpeed = RouteSimulationDefaults.importedRouteFallbackSpeedMetersPerSecond
-        routeStartSelection = RouteSearchSelection(title: "\(sourceName) Start", coordinate: firstCoordinate)
-        routeEndSelection = RouteSearchSelection(title: "\(sourceName) End", coordinate: lastCoordinate)
+        routeStartSelection = RouteSearchSelection(title: "\(sourceName) 起点", coordinate: firstCoordinate)
+        routeEndSelection = RouteSearchSelection(title: "\(sourceName) 终点", coordinate: lastCoordinate)
         setRoutePlan(RouteSimulationPlan(
             displayCoordinates: displayCoordinates,
             distance: distance,
@@ -1207,7 +1207,7 @@ struct LocationSimulationView: View {
     }
 
     private func showImportError(_ error: Error) {
-        alertTitle = "Import Failed"
+        alertTitle = "导入失败"
         alertMessage = error.localizedDescription
         showAlert = true
     }
@@ -1220,12 +1220,12 @@ struct LocationSimulationView: View {
                 .foregroundStyle(.secondary)
 
             HStack(spacing: 12) {
-                Button("Stop", action: clear)
+                Button("停止", action: clear)
                     .buttonStyle(.bordered)
                     .tint(.red)
                     .disabled(!pairingExists || isBusy || !hasActiveSimulation)
 
-                Button("Simulate Location", action: simulate)
+                Button("模拟位置", action: simulate)
                     .buttonStyle(.borderedProminent)
                     .disabled(!pairingExists || isBusy || isLoadingRoute)
 
@@ -1239,7 +1239,7 @@ struct LocationSimulationView: View {
                 .disabled(isRouteRunning)
             }
         } else {
-            Text("Tap map to drop pin")
+            Text("点击地图放置大头针")
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
         }
@@ -1263,12 +1263,12 @@ struct LocationSimulationView: View {
             routeAttributionLink
 
             HStack(spacing: 12) {
-                Button("Stop", action: clear)
+                Button("停止", action: clear)
                     .buttonStyle(.bordered)
                     .tint(.red)
                     .disabled(!pairingExists || isBusy || !hasActiveSimulation)
 
-                Button("Play Route", action: simulateRoute)
+                Button("播放路线", action: simulateRoute)
                     .buttonStyle(.borderedProminent)
                     .disabled(
                         !pairingExists ||
@@ -1279,7 +1279,7 @@ struct LocationSimulationView: View {
                         routePlaybackSamples.isEmpty
                     )
 
-                Button("Reset", action: resetRouteSelection)
+                Button("重置", action: resetRouteSelection)
                     .buttonStyle(.bordered)
                     .disabled(isBusy || isRouteRunning)
             }
@@ -1289,9 +1289,9 @@ struct LocationSimulationView: View {
     private func simulate() {
         guard pairingExists, let coord = coordinate, !isBusy else { return }
         runLocationCommand(
-            errorTitle: "Simulation Failed",
+            errorTitle: "模拟失败",
             errorMessage: { code in
-                "Could not simulate location (error \(code)). Make sure the device is connected and the DDI is mounted."
+                "无法模拟位置（错误 \(code)）。请确保设备已连接且 DDI 已挂载。"
             },
             operation: { locationUpdateCode(for: coord) }
         ) {
@@ -1312,9 +1312,9 @@ struct LocationSimulationView: View {
         stopResendLoop()
         cancelRoutePlayback(resetMarker: false)
         runLocationCommand(
-            errorTitle: "Route Simulation Failed",
+            errorTitle: "路线模拟失败",
             errorMessage: { code in
-                "Could not start route simulation (error \(code)). Make sure the device is connected and the DDI is mounted."
+                "无法启动路线模拟（错误 \(code)）。请确保设备已连接且 DDI 已挂载。"
             },
             operation: { locationUpdateCode(for: firstCoordinate) }
         ) {
@@ -1357,8 +1357,8 @@ struct LocationSimulationView: View {
         cancelRoutePlayback(resetMarker: true)
         stopResendLoop()
         runLocationCommand(
-            errorTitle: "Clear Failed",
-            errorMessage: { code in "Could not clear simulated location (error \(code))." },
+            errorTitle: "清除失败",
+            errorMessage: { code in "无法清除模拟位置（错误 \(code)）。" },
             operation: clear_simulated_location
         ) {
             endBackgroundTask()
@@ -1457,7 +1457,7 @@ struct LocationSimulationView: View {
                     throw NSError(
                         domain: "RouteSimulation",
                         code: -1,
-                        userInfo: [NSLocalizedDescriptionKey: "No drivable route was returned."]
+                        userInfo: [NSLocalizedDescriptionKey: "未返回可驾驶的路线。"]
                     )
                 }
 
@@ -1512,7 +1512,7 @@ struct LocationSimulationView: View {
                     guard routeRequestID == requestID else { return }
                     isLoadingRoute = false
                     isPrefetchingRouteSpeeds = false
-                    alertTitle = "Route Failed"
+                    alertTitle = "路线失败"
                     alertMessage = error.localizedDescription
                     showAlert = true
                 }
@@ -1536,8 +1536,8 @@ struct LocationSimulationView: View {
                         if let lastSuccessfulCoordinate {
                             startResendLoop(with: lastSuccessfulCoordinate)
                         }
-                        alertTitle = "Route Simulation Failed"
-                        alertMessage = "Could not continue route simulation (error \(code))."
+                        alertTitle = "路线模拟失败"
+                        alertMessage = "无法继续路线模拟（错误 \(code)）。"
                         showAlert = true
                     }
                     return
@@ -1622,7 +1622,7 @@ private struct RouteSearchSheet: View {
         NavigationStack {
             VStack(alignment: .leading, spacing: 16) {
                 routeField(
-                    title: "Start",
+                    title: "起点",
                     icon: "circle.fill",
                     tint: .green,
                     text: $startQuery,
@@ -1631,7 +1631,7 @@ private struct RouteSearchSheet: View {
                 )
 
                 routeField(
-                    title: "End",
+                    title: "终点",
                     icon: "flag.checkered.circle.fill",
                     tint: .red,
                     text: $endQuery,
@@ -1646,7 +1646,7 @@ private struct RouteSearchSheet: View {
                 }
 
                 if isResolvingSelection {
-                    ProgressView("Resolving location…")
+                    ProgressView("正在解析位置…")
                         .font(.footnote)
                 } else if !activeResults.isEmpty {
                     ScrollView {
@@ -1680,7 +1680,7 @@ private struct RouteSearchSheet: View {
                     }
                     .frame(maxHeight: 260)
                 } else {
-                    Text("Search for a start and destination to build the route.")
+                    Text("搜索起点和目的地以构建路线。")
                         .font(.footnote)
                         .foregroundStyle(.secondary)
                 }
@@ -1688,17 +1688,17 @@ private struct RouteSearchSheet: View {
                 Spacer(minLength: 0)
             }
             .padding(16)
-            .navigationTitle("Simulate Route")
+            .navigationTitle("模拟路线")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") {
+                    Button("取消") {
                         dismiss()
                     }
                 }
 
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Use Route") {
+                    Button("使用路线") {
                         guard let startSelection, let endSelection else { return }
                         onApply(startSelection, endSelection)
                         dismiss()
@@ -1788,7 +1788,7 @@ private struct RouteSearchSheet: View {
                 isResolvingSelection = false
 
                 guard let item = response?.mapItems.first else {
-                    errorMessage = error?.localizedDescription ?? "Could not resolve that location."
+                    errorMessage = error?.localizedDescription ?? "无法解析该位置。"
                     return
                 }
 
@@ -1825,9 +1825,9 @@ struct BookmarksView: View {
             Group {
                 if bookmarks.isEmpty {
                     ContentUnavailableView(
-                        "No Bookmarks",
+                        "无书签",
                         systemImage: "bookmark.slash",
-                        description: Text("Drop a pin on the map and tap the bookmark icon to save a location.")
+                        description: Text("在地图上放置大头针并点击书签图标以保存位置。")
                     )
                 } else {
                     List {
@@ -1848,7 +1848,7 @@ struct BookmarksView: View {
                     }
                 }
             }
-            .navigationTitle("Bookmarks")
+            .navigationTitle("书签")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 if !bookmarks.isEmpty {

@@ -45,7 +45,7 @@ struct ScriptListView: View {
                         Button {
                             onSelectScript?(nil)
                         } label: {
-                            Label("No Script", systemImage: "nosign")
+                            Label("无脚本", systemImage: "nosign")
                         }
                     }
                 }
@@ -54,11 +54,11 @@ struct ScriptListView: View {
                     Section {
                         VStack(alignment: .leading, spacing: 4) {
                             Label(
-                                isPickerMode ? "No scripts available" : "No scripts found",
+                                isPickerMode ? "没有可用的脚本" : "未找到脚本",
                                 systemImage: "doc.text.magnifyingglass"
                             )
                             .foregroundStyle(.secondary)
-                            Text(isPickerMode ? "Import a file or choose None." : "Tap New or Import to get started.")
+                            Text(isPickerMode ? "导入文件或选择无。" : "点击新建或导入以开始。")
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
                         }
@@ -73,25 +73,25 @@ struct ScriptListView: View {
                                         Button(role: .destructive) {
                                             pendingDelete = script
                                             showDeleteConfirmation = true
-                                        } label: { Label("Delete", systemImage: "trash") }
+                                        } label: { Label("删除", systemImage: "trash") }
                                     }
                                 }
                                 .contextMenu {
                                     Button { copyName(script) } label: {
-                                        Label("Copy Filename", systemImage: "doc.on.doc")
+                                        Label("复制文件名", systemImage: "doc.on.doc")
                                     }
                                     Button { copyPath(script) } label: {
-                                        Label("Copy Path", systemImage: "folder")
+                                        Label("复制路径", systemImage: "folder")
                                     }
                                     if !isPickerMode {
                                         Button { saveDefaultScript(script) } label: {
-                                            Label("Set Default", systemImage: "star")
+                                            Label("设为默认", systemImage: "star")
                                         }
                                         Divider()
                                         Button(role: .destructive) {
                                             pendingDelete = script
                                             showDeleteConfirmation = true
-                                        } label: { Label("Delete", systemImage: "trash") }
+                                        } label: { Label("删除", systemImage: "trash") }
                                     }
                                 }
                         }
@@ -102,32 +102,32 @@ struct ScriptListView: View {
             .searchable(
                 text: $searchText,
                 placement: .navigationBarDrawer(displayMode: .always),
-                prompt: "Search scripts…"
+                prompt: "搜索脚本…"
             )
-            .navigationTitle(isPickerMode ? "Choose Script" : "Scripts")
+            .navigationTitle(isPickerMode ? "选择脚本" : "脚本")
             .toolbar {
                 ToolbarItemGroup(placement: .navigationBarTrailing) {
                     if !isPickerMode {
                         Button { showNewFileAlert = true } label: {
-                            Label("New", systemImage: "doc.badge.plus")
+                            Label("新建", systemImage: "doc.badge.plus")
                         }
                         Button { showImporter = true } label: {
-                            Label("Import", systemImage: "tray.and.arrow.down")
+                            Label("导入", systemImage: "tray.and.arrow.down")
                         }
                     }
                 }
             }
             .onAppear(perform: loadScripts)
-            .alert("New Script", isPresented: $showNewFileAlert) {
-                TextField("Filename", text: $newFileName)
-                Button("Create", action: createNewScript)
-                Button("Cancel", role: .cancel) { }
+            .alert("新建脚本", isPresented: $showNewFileAlert) {
+                TextField("文件名", text: $newFileName)
+                Button("创建", action: createNewScript)
+                Button("取消", role: .cancel) { }
             }
-            .alert("Delete Script?", isPresented: $showDeleteConfirmation, presenting: pendingDelete) { script in
-                Button("Delete", role: .destructive) { deleteScript(script) }
-                Button("Cancel", role: .cancel) { pendingDelete = nil }
+            .alert("删除脚本？", isPresented: $showDeleteConfirmation, presenting: pendingDelete) { script in
+                Button("删除", role: .destructive) { deleteScript(script) }
+                Button("取消", role: .cancel) { pendingDelete = nil }
             } message: { script in
-                Text("Delete \(script.lastPathComponent)? This cannot be undone.")
+                Text("删除 \(script.lastPathComponent)？此操作无法撤销。")
             }
             .fileImporter(
                 isPresented: $showImporter,
@@ -135,21 +135,21 @@ struct ScriptListView: View {
             ) { result in
                 switch result {
                 case .success(let fileURL): importScript(from: fileURL)
-                case .failure(let error): presentError(title: "Import Failed", message: error.localizedDescription)
+                case .failure(let error): presentError(title: "导入失败", message: error.localizedDescription)
                 }
             }
         }
                 .overlay {
             if isBusy {
                 Color.black.opacity(0.35).ignoresSafeArea()
-                ProgressView("Working…")
+                ProgressView("处理中…")
                     .padding(16)
                     .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
             }
             if justCopied {
                 VStack {
                     Spacer()
-                    Text("Copied")
+                    Text("已复制")
                         .font(.footnote.weight(.semibold))
                         .padding(.horizontal, 14).padding(.vertical, 10)
                         .background(.ultraThinMaterial, in: Capsule())
@@ -160,7 +160,7 @@ struct ScriptListView: View {
             }
         }
         .alert(alertTitle, isPresented: $alertVisible) {
-            Button("OK", role: .cancel) { }
+            Button("确定", role: .cancel) { }
         } message: {
             Text(alertMessage)
         }
@@ -226,13 +226,13 @@ struct ScriptListView: View {
                 .sorted { $0.lastPathComponent.localizedCaseInsensitiveCompare($1.lastPathComponent) == .orderedAscending }
         } catch {
             scripts = []
-            presentError(title: "Unable to Load Scripts", message: error.localizedDescription)
+            presentError(title: "无法加载脚本", message: error.localizedDescription)
         }
     }
 
     private func saveDefaultScript(_ url: URL) {
         defaultScriptName = url.lastPathComponent
-        presentSuccess(title: "Default Script Set", message: url.lastPathComponent)
+        presentSuccess(title: "已设为默认脚本", message: url.lastPathComponent)
     }
 
     private func createNewScript() {
@@ -240,21 +240,21 @@ struct ScriptListView: View {
         var filename = newFileName.trimmingCharacters(in: .whitespacesAndNewlines)
         if !filename.hasSuffix(".js") { filename += ".js" }
         guard let filename = ScriptStore.normalizedScriptFileName(filename) else {
-            presentError(title: "Failed to Create New Script", message: "Use a simple .js filename without folders.")
+            presentError(title: "创建新脚本失败", message: "请使用不包含文件夹的简单 .js 文件名。")
             return
         }
         do {
             let newURL = try ScriptStore.scriptURL(named: filename)
             guard !FileManager.default.fileExists(atPath: newURL.path) else {
-                presentError(title: "Failed to Create New Script", message: "A script with the same name already exists.")
+                presentError(title: "创建新脚本失败", message: "已存在同名脚本。")
                 return
             }
             try "".write(to: newURL, atomically: true, encoding: .utf8)
             newFileName = ""
             loadScripts()
-            presentSuccess(title: "Created", message: filename)
+            presentSuccess(title: "已创建", message: filename)
         } catch {
-            presentError(title: "Error Creating File", message: error.localizedDescription)
+            presentError(title: "创建文件错误", message: error.localizedDescription)
         }
     }
 
@@ -266,7 +266,7 @@ struct ScriptListView: View {
             }
             loadScripts()
         } catch {
-            presentError(title: "Delete Failed", message: error.localizedDescription)
+            presentError(title: "删除失败", message: error.localizedDescription)
         }
     }
 
@@ -292,11 +292,11 @@ struct ScriptListView: View {
                 try FileManager.default.copyItem(at: fileURL, to: dest)
                 DispatchQueue.main.async {
                     self.loadScripts()
-                    self.presentSuccess(title: "Imported", message: fileName)
+                    self.presentSuccess(title: "已导入", message: fileName)
                 }
             } catch {
                 DispatchQueue.main.async {
-                    self.presentError(title: "Import Failed", message: error.localizedDescription)
+                    self.presentError(title: "导入失败", message: error.localizedDescription)
                 }
             }
         }

@@ -117,7 +117,7 @@ final class JITEnableContext {
         let pairingFileURL = PairingFileStore.prepareURL()
 
         guard FileManager.default.fileExists(atPath: pairingFileURL.path) else {
-            throw makeError("Pairing file not found!", code: -17)
+            throw makeError("未找到配对文件！", code: -17)
         }
 
         var pairingFile: OpaquePointer?
@@ -126,11 +126,11 @@ final class JITEnableContext {
         }
 
         if let ffiError {
-            throw error(from: ffiError, fallback: "Failed to read pairing file!")
+            throw error(from: ffiError, fallback: "读取配对文件失败！")
         }
 
         guard let pairingFile else {
-            throw makeError("Failed to read pairing file!", code: -17)
+            throw makeError("读取配对文件失败！", code: -17)
         }
 
         return pairingFile
@@ -147,7 +147,7 @@ final class JITEnableContext {
         let deviceIP = DeviceConnectionContext.targetIPAddress
         let parseResult = deviceIP.withCString { inet_pton(AF_INET, $0, &addr.sin_addr) }
         guard parseResult == 1 else {
-            throw makeError("Failed to parse target IP address.", code: -18)
+            throw makeError("解析目标 IP 地址失败。", code: -18)
         }
 
         var tunnel = TunnelHandles()
@@ -169,13 +169,13 @@ final class JITEnableContext {
         }
 
         if let ffiError {
-            throw error(from: ffiError, fallback: "Failed to create tunnel")
+            throw error(from: ffiError, fallback: "创建隧道失败")
         }
 
         guard tunnel.adapter != nil, tunnel.handshake != nil else {
             var incompleteTunnel = tunnel
             incompleteTunnel.free()
-            throw makeError("Tunnel was created without valid handles")
+            throw makeError("隧道已创建但句柄无效")
         }
 
         return tunnel
@@ -418,7 +418,7 @@ final class JITEnableContext {
 
             guard let remoteServer = session.remoteServer,
                   let debugProxy = session.debugProxy else {
-                throw makeError("Debug session was not created")
+                throw makeError("调试会话未创建")
             }
 
             return try body(remoteServer, debugProxy)
@@ -439,7 +439,7 @@ final class JITEnableContext {
         }
 
         guard let remoteServer else {
-            throw makeError("Remote server handle was not created")
+            throw makeError("远程服务器句柄未创建")
         }
 
         defer { remote_server_free(remoteServer) }
@@ -456,7 +456,7 @@ final class JITEnableContext {
         }
 
         guard let processControl else {
-            throw makeError("Process control handle was not created")
+            throw makeError("进程控制句柄未创建")
         }
 
         defer { process_control_free(processControl) }
@@ -489,7 +489,7 @@ final class JITEnableContext {
 
                 guard let heartbeatClient else {
                     tunnel.free()
-                    throw self.makeError("Heartbeat client was not created")
+                    throw self.makeError("心跳客户端未创建")
                 }
 
                 return (client: heartbeatClient, tunnel: tunnel)
@@ -506,7 +506,7 @@ final class JITEnableContext {
 
     private func sendDebugCommand(_ command: String, debugProxy: OpaquePointer) throws -> String? {
         guard let commandHandle = debugserver_command_new(command, nil, 0) else {
-            throw makeError("Failed to create debugserver command: \(command)")
+            throw makeError("创建 debugserver 命令失败: \(command)")
         }
 
         var response: UnsafeMutablePointer<CChar>?
@@ -517,7 +517,7 @@ final class JITEnableContext {
             if let response {
                 idevice_string_free(response)
             }
-            throw error(from: ffiError, fallback: "Debugserver command failed: \(command)")
+            throw error(from: ffiError, fallback: "Debugserver 命令失败: \(command)")
         }
 
         defer {
@@ -605,7 +605,7 @@ final class JITEnableContext {
                 }
 
                 if let ffiError {
-                    throw error(from: ffiError, fallback: "Failed to launch app")
+                    throw error(from: ffiError, fallback: "启动应用失败")
                 }
 
                 return Int32(pid)
@@ -627,7 +627,7 @@ final class JITEnableContext {
                     }
 
                     if let ffiError {
-                        throw error(from: ffiError, fallback: "Failed to launch app")
+                        throw error(from: ffiError, fallback: "启动应用失败")
                     }
 
                     return pid

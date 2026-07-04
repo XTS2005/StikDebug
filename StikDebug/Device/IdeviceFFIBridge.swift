@@ -564,14 +564,14 @@ extension JITEnableContext {
                 }
 
                 guard let rawIconData, rawIconLength > 0 else {
-                    throw IdeviceBridge.makeError(message: "App icon data was empty")
+                    throw IdeviceBridge.makeError(message: "应用图标数据为空")
                 }
 
                 defer { free(rawIconData) }
 
                 let data = Data(bytes: rawIconData, count: rawIconLength)
                 guard let image = UIImage(data: data) else {
-                    throw IdeviceBridge.makeError(message: "Failed to decode app icon image")
+                    throw IdeviceBridge.makeError(message: "解码应用图标图像失败")
                 }
 
                 return image
@@ -609,7 +609,7 @@ extension JITEnableContext {
         guard plist_to_xml(plistObject, &xml, &xmlLength) == PLIST_ERR_SUCCESS,
               let xml,
               xmlLength > 0 else {
-            throw IdeviceBridge.makeError(message: "Failed to serialize device info plist")
+            throw IdeviceBridge.makeError(message: "序列化设备信息 plist 失败")
         }
 
         return xml

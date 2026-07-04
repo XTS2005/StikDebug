@@ -24,27 +24,27 @@ private enum ExternalLocationAction: Identifiable {
     var title: String {
         switch self {
         case .simulate:
-            return "Simulate Location?"
+            return "模拟位置？"
         case .clear:
-            return "Clear Location?"
+            return "清除位置？"
         }
     }
 
     var message: String {
         switch self {
         case .simulate(_, let latitude, let longitude):
-            return String(format: "An external link wants to set the simulated location to %.6f, %.6f.", latitude, longitude)
+            return String(format: "外部链接想要将模拟位置设置为 %.6f, %.6f。", latitude, longitude)
         case .clear:
-            return "An external link wants to clear the simulated location."
+            return "外部链接想要清除模拟位置。"
         }
     }
 
     var confirmationTitle: String {
         switch self {
         case .simulate:
-            return "Set Location"
+            return "设置位置"
         case .clear:
-            return "Clear Location"
+            return "清除位置"
         }
     }
 }
@@ -77,7 +77,7 @@ struct MainTabView: View {
                 handleURL(url)
             }
             .confirmationDialog(
-                pendingLocationAction?.title ?? "External Location Request",
+                pendingLocationAction?.title ?? "外部位置请求",
                 isPresented: Binding(
                     get: { pendingLocationAction != nil },
                     set: { isPresented in
@@ -93,7 +93,7 @@ struct MainTabView: View {
                     performLocationAction(action)
                     pendingLocationAction = nil
                 }
-                Button("Cancel", role: .cancel) {
+                Button("取消", role: .cancel) {
                     pendingLocationAction = nil
                 }
             } message: { action in
@@ -104,7 +104,7 @@ struct MainTabView: View {
                     feature.destination
                         .toolbar {
                             ToolbarItem(placement: .cancellationAction) {
-                                Button("Close") {
+                                Button("关闭") {
                                     detachedFeature = nil
                                 }
                             }
@@ -156,8 +156,8 @@ struct MainTabView: View {
     private func confirmSimulatedLocation(from url: URL) {
         guard let coordinate = coordinate(from: url) else {
             showAlert(
-                title: "Invalid Location URL",
-                message: "Use stikdebug://simulate-location?lat=37.3349&lon=-122.0090",
+                title: "无效的位置 URL",
+                message: "使用 stikdebug://simulate-location?lat=37.3349&lon=-122.0090",
                 showOk: true
             )
             return
@@ -165,8 +165,8 @@ struct MainTabView: View {
 
         guard coordinateIsValid(latitude: coordinate.latitude, longitude: coordinate.longitude) else {
             showAlert(
-                title: "Invalid Coordinates",
-                message: "Latitude must be between -90 and 90. Longitude must be between -180 and 180.",
+                title: "无效的坐标",
+                message: "纬度必须在 -90 到 90 之间。经度必须在 -180 到 180 之间。",
                 showOk: true
             )
             return
@@ -187,8 +187,8 @@ struct MainTabView: View {
     private func simulateLocation(from url: URL) {
         guard let coordinate = coordinate(from: url) else {
             showAlert(
-                title: "Invalid Location URL",
-                message: "Use stikdebug://simulate-location?lat=37.3349&lon=-122.0090",
+                title: "无效的位置 URL",
+                message: "使用 stikdebug://simulate-location?lat=37.3349&lon=-122.0090",
                 showOk: true
             )
             return
@@ -196,8 +196,8 @@ struct MainTabView: View {
 
         guard coordinateIsValid(latitude: coordinate.latitude, longitude: coordinate.longitude) else {
             showAlert(
-                title: "Invalid Coordinates",
-                message: "Latitude must be between -90 and 90. Longitude must be between -180 and 180.",
+                title: "无效的坐标",
+                message: "纬度必须在 -90 到 90 之间。经度必须在 -180 到 180 之间。",
                 showOk: true
             )
             return
@@ -206,8 +206,8 @@ struct MainTabView: View {
         let pairingFile = PairingFileStore.prepareURL()
         guard FileManager.default.fileExists(atPath: pairingFile.path) else {
             showAlert(
-                title: "Pairing File Required",
-                message: "Import a pairing file before simulating location from a URL.",
+                title: "需要配对文件",
+                message: "导入配对文件后，才能通过 URL 模拟位置。",
                 showOk: true
             )
             return
@@ -229,8 +229,8 @@ struct MainTabView: View {
                     )
                 } else {
                     showAlert(
-                        title: "Location Simulation Failed",
-                        message: "Could not simulate location from URL (error \(code)). Make sure the device is connected and the DDI is mounted.",
+                        title: "位置模拟失败",
+                        message: "无法通过 URL 模拟位置（错误 \(code)）。请确保设备已连接且 DDI 已挂载。",
                         showOk: true
                     )
                 }
@@ -247,8 +247,8 @@ struct MainTabView: View {
                     LogManager.shared.addInfoLog("Cleared simulated location from URL")
                 } else {
                     showAlert(
-                        title: "Clear Location Failed",
-                        message: "Could not clear simulated location from URL (error \(code)).",
+                        title: "清除位置失败",
+                        message: "无法通过 URL 清除模拟位置（错误 \(code)）。",
                         showOk: true
                     )
                 }

@@ -48,13 +48,13 @@ struct ConsoleLogsView: View {
                     syslogLogsPane
                 }
             }
-            .navigationTitle("Console")
+            .navigationTitle("控制台")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .principal) {
                     Picker("", selection: $selectedConsoleTab) {
-                        Text("App").tag(ConsoleTab.idevice)
-                        Text("System").tag(ConsoleTab.syslog)
+                        Text("应用").tag(ConsoleTab.idevice)
+                        Text("系统").tag(ConsoleTab.syslog)
                     }
                     .pickerStyle(.segmented)
                     .frame(width: 180)
@@ -62,13 +62,13 @@ struct ConsoleLogsView: View {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Menu {
                         if selectedConsoleTab == .idevice {
-                            Button("Refresh", systemImage: "arrow.clockwise") {
+                            Button("刷新", systemImage: "arrow.clockwise") {
                                 Task { await loadIdeviceLogsAsync() }
                             }
-                            Button("Clear", systemImage: "trash", role: .destructive) {
+                            Button("清除", systemImage: "trash", role: .destructive) {
                                 logManager.clearLogs()
                             }
-                            Button("Copy Logs", systemImage: "doc.on.doc") {
+                            Button("复制日志", systemImage: "doc.on.doc") {
                                 copyJITLogs()
                             }
                             exportMenuOption
@@ -76,13 +76,13 @@ struct ConsoleLogsView: View {
                             Button(syslogControlLabel, systemImage: syslogControlIcon) {
                                 toggleSyslogPlayback()
                             }
-                            Button("Clear", systemImage: "trash", role: .destructive) {
+                            Button("清除", systemImage: "trash", role: .destructive) {
                                 systemLogStream.clear()
                             }
-                            Button("Copy Logs", systemImage: "doc.on.doc") {
+                            Button("复制日志", systemImage: "doc.on.doc") {
                                 copySyslogToClipboard()
                             }
-                            Button("Adjust Speed", systemImage: "slider.horizontal.3") {
+                            Button("调整速度", systemImage: "slider.horizontal.3") {
                                 showingSyslogSpeedSelector = true
                             }
                         }
@@ -92,7 +92,7 @@ struct ConsoleLogsView: View {
                 }
             }
             .alert(alertTitle, isPresented: $showingCustomAlert) {
-                Button("OK", role: .cancel) { }
+                Button("确定", role: .cancel) { }
             } message: {
                 Text(alertMessage)
             }
@@ -102,9 +102,9 @@ struct ConsoleLogsView: View {
                         systemLogStream.updateInterval = option
                     }
                 }
-                Button("Cancel", role: .cancel) { }
+                Button("取消", role: .cancel) { }
             } message: {
-                Text("Choose how quickly new relay entries appear.")
+                Text("选择新中继条目出现的速度。")
             }
         }
                 .onDisappear {
@@ -112,7 +112,7 @@ struct ConsoleLogsView: View {
         }
         .onChange(of: systemLogStream.lastError) { _, newError in
             if let error = newError {
-                presentAlert(title: "Syslog Error", message: error)
+                presentAlert(title: "Syslog 错误", message: error)
                 systemLogStream.lastError = nil
             }
         }
@@ -191,7 +191,7 @@ struct ConsoleLogsView: View {
             HStack {
                 Image(systemName: "magnifyingglass")
                     .foregroundStyle(.secondary)
-                TextField("Filter logs", text: $syslogSearchText)
+                TextField("筛选日志", text: $syslogSearchText)
                     .textFieldStyle(.plain)
                     .autocorrectionDisabled()
                     .textInputAutocapitalization(.never)
@@ -261,7 +261,7 @@ struct ConsoleLogsView: View {
             "[\(formatTime(date: $0.timestamp))] [\($0.type.rawValue)] \($0.message)"
         }.joined(separator: "\n")
         UIPasteboard.general.string = logsContent
-        presentAlert(title: "Logs Copied", message: "Logs have been copied to clipboard.")
+        presentAlert(title: "日志已复制", message: "日志已复制到剪贴板。")
     }
 
     @ViewBuilder
@@ -272,11 +272,11 @@ struct ConsoleLogsView: View {
                 item: logURL,
                 preview: SharePreview("idevice_log.txt", image: Image(systemName: "doc.text"))
             ) {
-                Label("Export Logs", systemImage: "square.and.arrow.up")
+                Label("导出日志", systemImage: "square.and.arrow.up")
             }
         } else {
-            Button("Export Logs", systemImage: "square.and.arrow.up") {
-                presentAlert(title: "Export Failed", message: "No idevice logs found")
+            Button("导出日志", systemImage: "square.and.arrow.up") {
+                presentAlert(title: "导出失败", message: "未找到 idevice 日志")
             }
         }
     }
@@ -300,7 +300,7 @@ struct ConsoleLogsView: View {
 
     private func intervalLabel(for value: Double) -> String {
         if value <= 0 {
-            return "Live"
+            return "实时"
         }
         return "\(String(format: "%.1f", value))s"
     }
@@ -424,8 +424,8 @@ struct ConsoleLogsView: View {
     private func copySyslogToClipboard() {
         let entries = filteredSyslogEntries
         guard !entries.isEmpty else {
-            let message = syslogSearchText.isEmpty ? "No syslog entries to copy." : "No matching syslog entries to copy."
-            presentAlert(title: "Export Failed", message: message)
+            let message = syslogSearchText.isEmpty ? "没有 syslog 条目可复制。" : "没有匹配的 syslog 条目可复制。"
+            presentAlert(title: "导出失败", message: message)
             return
         }
 
@@ -435,9 +435,9 @@ struct ConsoleLogsView: View {
 
         UIPasteboard.general.string = content
         let message = syslogSearchText.isEmpty
-            ? "Latest syslog entries copied to clipboard."
-            : "\(entries.count) filtered syslog entries copied to clipboard."
-        presentAlert(title: "Logs Copied", message: message)
+            ? "最新 syslog 条目已复制到剪贴板。"
+            : "\(entries.count) 条筛选后的 syslog 条目已复制到剪贴板。"
+        presentAlert(title: "日志已复制", message: message)
     }
 
     private var syslogControlIcon: String {
@@ -449,9 +449,9 @@ struct ConsoleLogsView: View {
 
     private var syslogControlLabel: String {
         if !systemLogStream.isStreaming {
-            return "Start syslog relay"
+            return "启动 syslog 中继"
         }
-        return systemLogStream.isPaused ? "Resume syslog stream" : "Pause syslog stream"
+        return systemLogStream.isPaused ? "恢复 syslog 流" : "暂停 syslog 流"
     }
 
     private func presentAlert(title: String, message: String) {

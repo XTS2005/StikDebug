@@ -32,34 +32,34 @@ enum HomeExternalAction: Identifiable {
     var title: String {
         switch self {
         case .enableJIT:
-            return "Enable JIT?"
+            return "启用 JIT？"
         case .killProcess:
-            return "Kill Process?"
+            return "终止进程？"
         case .launchApp:
-            return "Launch App?"
+            return "启动应用？"
         }
     }
 
     var message: String {
         switch self {
         case .enableJIT(let configuration):
-            let scriptText = configuration.scriptData == nil ? "" : " and run a script"
-            return "An external link wants to enable JIT\(scriptText) for \(targetDescription(for: configuration))."
+            let scriptText = configuration.scriptData == nil ? "" : " 并运行脚本"
+            return "外部链接想要为 \(targetDescription(for: configuration)) 启用 JIT\(scriptText)。"
         case .killProcess(let pid):
-            return "An external link wants to kill process \(pid)."
+            return "外部链接想要终止进程 \(pid)。"
         case .launchApp(let bundleID):
-            return "An external link wants to launch \(bundleID)."
+            return "外部链接想要启动 \(bundleID)。"
         }
     }
 
     var confirmationTitle: String {
         switch self {
         case .enableJIT(let configuration):
-            return configuration.scriptData == nil ? "Enable JIT" : "Enable and Run Script"
+            return configuration.scriptData == nil ? "启用 JIT" : "启用并运行脚本"
         case .killProcess:
-            return "Kill Process"
+            return "终止进程"
         case .launchApp:
-            return "Launch App"
+            return "启动应用"
         }
     }
 
@@ -79,8 +79,8 @@ enum HomeExternalAction: Identifiable {
             return bundleID
         }
         if let pid = configuration.pid {
-            return "process \(pid)"
+            return "进程 \(pid)"
         }
-        return "the requested app"
+        return "所请求的应用"
     }
 }

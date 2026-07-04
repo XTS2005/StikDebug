@@ -5,8 +5,8 @@ import Foundation
 
 struct InstalledAppEntity: AppEntity {
     static var typeDisplayRepresentation = TypeDisplayRepresentation(
-        name: "Installed App",
-        numericFormat: "\(placeholder: .int) apps"
+        name: "已安装的应用",
+        numericFormat: "\(placeholder: .int) 个应用"
     )
     static var defaultQuery = InstalledAppQuery()
 
@@ -49,8 +49,8 @@ struct InstalledAppQuery: EntityStringQuery {
 
 struct RunningProcessEntity: AppEntity {
     static var typeDisplayRepresentation = TypeDisplayRepresentation(
-        name: "Running Process",
-        numericFormat: "\(placeholder: .int) processes"
+        name: "正在运行的进程",
+        numericFormat: "\(placeholder: .int) 个进程"
     )
     static var defaultQuery = RunningProcessQuery()
 
@@ -132,24 +132,24 @@ struct RunningProcessQuery: EntityStringQuery {
 // MARK: - Enable JIT Intent
 
 struct EnableJITIntent: AppIntent, ForegroundContinuableIntent {
-    static var title: LocalizedStringResource = "Enable JIT"
+    static var title: LocalizedStringResource = "启用 JIT"
     static var description = IntentDescription(
-        "Enables JIT compilation for an installed app using StikDebug.",
+        "使用 StikDebug 为已安装的应用启用 JIT 编译。",
         categoryName: "StikDebug"
     )
     static var openAppWhenRun: Bool = true
 
-    @Parameter(title: "App", description: "The app to enable JIT for",
-               requestValueDialog: "Which app would you like to enable JIT for?")
+    @Parameter(title: "应用", description: "要启用 JIT 的应用",
+               requestValueDialog: "您想为哪个应用启用 JIT？")
     var app: InstalledAppEntity?
 
     static var parameterSummary: some ParameterSummary {
-        Summary("Enable JIT for \(\.$app)")
+        Summary("为 \(\.$app) 启用 JIT")
     }
 
     func perform() async throws -> some IntentResult & ReturnsValue<String> {
         guard let bundleID = app?.id else {
-            return .result(value: "Select an app to enable JIT for.")
+            return .result(value: "选择一个应用以启用 JIT。")
         }
 
         await ensureTunnel()
@@ -195,10 +195,10 @@ struct EnableJITIntent: AppIntent, ForegroundContinuableIntent {
 
         if success {
             LogManager.shared.addInfoLog("JIT enabled for \(target) via Shortcut")
-            return .result(value: "Successfully enabled JIT for \(target).")
+            return .result(value: "已成功为 \(target) 启用 JIT。")
         } else {
             LogManager.shared.addErrorLog("Failed to enable JIT for \(target) via Shortcut")
-            return .result(value: "Failed to enable JIT for \(target).")
+            return .result(value: "为 \(target) 启用 JIT 失败。")
         }
     }
 }
@@ -206,22 +206,22 @@ struct EnableJITIntent: AppIntent, ForegroundContinuableIntent {
 // MARK: - Kill Process Intent
 
 struct KillProcessIntent: AppIntent {
-    static var title: LocalizedStringResource = "Kill Process"
+    static var title: LocalizedStringResource = "终止进程"
     static var description = IntentDescription(
-        "Terminates a running process on the device using StikDebug.",
+        "使用 StikDebug 终止设备上正在运行的进程。",
         categoryName: "StikDebug"
     )
     static var openAppWhenRun: Bool = false
 
-    @Parameter(title: "Process", description: "The process to terminate",
-               requestValueDialog: "Which process would you like to kill?")
+    @Parameter(title: "进程", description: "要终止的进程",
+               requestValueDialog: "您想终止哪个进程？")
     var process: RunningProcessEntity?
 
-    @Parameter(title: "Process ID", description: "A specific PID to kill instead of selecting a process")
+    @Parameter(title: "进程 ID", description: "要终止的特定 PID，代替选择进程")
     var pid: Int?
 
     static var parameterSummary: some ParameterSummary {
-        Summary("Kill \(\.$process)")
+        Summary("终止 \(\.$process)")
     }
 
     func perform() async throws -> some IntentResult & ReturnsValue<String> {
@@ -237,12 +237,12 @@ struct KillProcessIntent: AppIntent {
 
             // Always re-resolve to get the current PID — the stored one may be stale
             guard let resolved = process.resolveCurrentPID() else {
-                return .result(value: "\(process.displayName) is no longer running.")
+                return .result(value: "\(process.displayName) 已不再运行。")
             }
             targetPID = resolved
             targetName = process.displayName
         } else {
-            return .result(value: "Select a process or provide a PID.")
+            return .result(value: "选择一个进程或提供 PID。")
         }
 
         var err: NSError?
@@ -250,11 +250,11 @@ struct KillProcessIntent: AppIntent {
 
         if success {
             LogManager.shared.addInfoLog("Killed \(targetName) via Shortcut")
-            return .result(value: "Successfully killed \(targetName).")
+            return .result(value: "已成功终止 \(targetName)。")
         } else {
             let reason = err?.localizedDescription ?? "Unknown error"
             LogManager.shared.addErrorLog("Failed to kill \(targetName) via Shortcut: \(reason)")
-            return .result(value: "Failed to kill \(targetName): \(reason)")
+            return .result(value: "终止 \(targetName) 失败: \(reason)")
         }
     }
 }
@@ -266,29 +266,29 @@ struct StikDebugShortcuts: AppShortcutsProvider {
         AppShortcut(
             intent: EnableJITIntent(),
             phrases: [
-                "Enable JIT for \(\.$app) with \(.applicationName)",
-                "Enable JIT for \(\.$app) using \(.applicationName)",
-                "Enable JIT for \(\.$app) in \(.applicationName)",
-                "\(.applicationName) enable JIT for \(\.$app)",
-                "\(.applicationName) enable JIT",
-                "Use \(.applicationName) to enable JIT for \(\.$app)",
-                "Use \(.applicationName) to enable JIT"
+                "使用 \(.applicationName) 为 \(\.$app) 启用 JIT",
+                "用 \(.applicationName) 为 \(\.$app) 启用 JIT",
+                "在 \(.applicationName) 中为 \(\.$app) 启用 JIT",
+                "\(.applicationName) 为 \(\.$app) 启用 JIT",
+                "\(.applicationName) 启用 JIT",
+                "使用 \(.applicationName) 为 \(\.$app) 启用 JIT",
+                "使用 \(.applicationName) 启用 JIT"
             ],
-            shortTitle: "Enable JIT",
+            shortTitle: "启用 JIT",
             systemImageName: "bolt.fill"
         )
         AppShortcut(
             intent: KillProcessIntent(),
             phrases: [
-                "Kill \(\.$process) with \(.applicationName)",
-                "Kill \(\.$process) using \(.applicationName)",
-                "Kill \(\.$process) in \(.applicationName)",
-                "\(.applicationName) kill \(\.$process)",
-                "\(.applicationName) kill process",
-                "Use \(.applicationName) to kill \(\.$process)",
-                "Use \(.applicationName) to stop \(\.$process)"
+                "使用 \(.applicationName) 终止 \(\.$process)",
+                "用 \(.applicationName) 终止 \(\.$process)",
+                "在 \(.applicationName) 中终止 \(\.$process)",
+                "\(.applicationName) 终止 \(\.$process)",
+                "\(.applicationName) 终止进程",
+                "使用 \(.applicationName) 终止 \(\.$process)",
+                "使用 \(.applicationName) 停止 \(\.$process)"
             ],
-            shortTitle: "Kill Process",
+            shortTitle: "终止进程",
             systemImageName: "xmark.circle.fill"
         )
     }

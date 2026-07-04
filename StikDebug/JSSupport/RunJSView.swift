@@ -96,8 +96,8 @@ final class RunJSViewModel: ObservableObject, Identifiable, @unchecked Sendable 
             if let exception = self.context?.exception {
                 self.logs.append(exception.debugDescription)
             }
-            self.logs.append("Script Execution Completed")
-            self.logs.append("You are safe to close this window.")
+            self.logs.append("脚本执行完成")
+            self.logs.append("您可以安全地关闭此窗口。")
         }
     }
     
@@ -221,7 +221,7 @@ struct RunJSView: View {
                     HStack(spacing: 12) {
                         ProgressView()
                             .controlSize(.small)
-                        Text("Starting script...")
+                        Text("正在启动脚本...")
                             .foregroundStyle(.secondary)
                     }
                 } else {
@@ -231,7 +231,7 @@ struct RunJSView: View {
                     }
                 }
             }
-            .navigationTitle("Running \(model.scriptName)")
+            .navigationTitle("正在运行 \(model.scriptName)")
             .onChange(of: model.logs.count) { _, newCount in
                 guard newCount > 0 else { return }
                 withAnimation {

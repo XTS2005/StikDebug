@@ -55,7 +55,7 @@ final class DeveloperDiskImageService {
         let totalStages = Double(Self.downloadItems.count + 1)
         var completedStages = 0.0
 
-        progressHandler?(0.0, "Removing existing DDI files...")
+        progressHandler?(0.0, "正在移除现有 DDI 文件...")
         for item in Self.downloadItems {
             let fileURL = URL.documentsDirectory.appendingPathComponent(item.relativePath)
             if fileManager.fileExists(atPath: fileURL.path) {
@@ -64,17 +64,17 @@ final class DeveloperDiskImageService {
         }
 
         completedStages += 1.0
-        progressHandler?(completedStages / totalStages, "Starting downloads...")
+        progressHandler?(completedStages / totalStages, "正在开始下载...")
 
         for item in Self.downloadItems {
-            progressHandler?(completedStages / totalStages, "Downloading \(item.name)...")
+            progressHandler?(completedStages / totalStages, "正在下载 \(item.name)...")
             let destinationURL = URL.documentsDirectory.appendingPathComponent(item.relativePath)
             try await downloadFile(from: item.urlString, to: destinationURL)
             completedStages += 1.0
-            progressHandler?(completedStages / totalStages, "\(item.name) ready")
+            progressHandler?(completedStages / totalStages, "\(item.name) 已就绪")
         }
 
-        progressHandler?(1.0, "DDI download complete.")
+        progressHandler?(1.0, "DDI 下载完成。")
     }
 
     private static let downloadItems: [DDIDownloadItem] = [
@@ -110,11 +110,11 @@ enum DDIDownloadError: LocalizedError {
     var errorDescription: String? {
         switch self {
         case .invalidURL(let string):
-            return "Invalid download URL: \(string)"
+            return "无效的下载 URL: \(string)"
         case .invalidResponse:
-            return "The DDI server returned an invalid response."
+            return "DDI 服务器返回了无效响应。"
         case .badStatus(let statusCode):
-            return "The DDI server returned HTTP \(statusCode)."
+            return "DDI 服务器返回了 HTTP \(statusCode)。"
         }
     }
 }

@@ -91,7 +91,7 @@ final class TunnelManager: ObservableObject {
         }
 
         showAlert(
-            title: "Connection Error",
+            title: "连接错误",
             message: tunnelConnectionAlertMessage(for: error),
             showOk: false,
             showTryAgain: true
@@ -106,11 +106,11 @@ final class TunnelManager: ObservableObject {
         LogManager.shared.addInfoLog("Pairing file reported invalid; keeping existing file")
 
         showAlert(
-            title: "Invalid Pairing File",
-            message: "The pairing file may be invalid or expired. You can import a new pairing file to replace it.",
+            title: "无效的配对文件",
+            message: "配对文件可能无效或已过期。您可以导入新的配对文件来替换它。",
             showOk: true,
             showTryAgain: false,
-            primaryButtonText: "Select New File"
+            primaryButtonText: "选择新文件"
         ) { _ in
             NotificationCenter.default.post(name: NSNotification.Name("ShowPairingFilePicker"), object: nil)
         }
@@ -147,47 +147,47 @@ private func tunnelConnectionAlertMessage(for error: NSError) -> String {
     let recoverySteps: [String]
 
     if error.code == 48 || lowercasedMessage.contains("address already in use") || lowercasedMessage.contains("port already in use") {
-        likelyCause = "A port needed for the tunnel is already in use."
+        likelyCause = "隧道所需的端口已被占用。"
         recoverySteps = [
-            "Close other JIT, debugging, proxy, or VPN apps that may be using the tunnel.",
-            "Disconnect and reconnect LocalDevVPN.",
-            "Restart StikDebug, then try again.",
-            "If it keeps happening, reboot the device to clear the stuck port."
+            "关闭可能正在使用隧道的其他 JIT、调试、代理或 VPN 应用。",
+            "断开并重新连接 LocalDevVPN。",
+            "重启 StikDebug，然后重试。",
+            "如果问题持续存在，请重启设备以清除被占用的端口。"
         ]
     } else if error.code == 54 || lowercasedMessage.contains("connection reset") {
-        likelyCause = "The device or VPN closed the tunnel connection before setup finished."
+        likelyCause = "设备或 VPN 在设置完成前关闭了隧道连接。"
         recoverySteps = [
-            "Open LocalDevVPN and confirm the VPN is connected.",
-            "Make sure LocalDevVPN is using the default \(DeviceConnectionContext.defaultTargetIPAddress) address.",
-            "Reconnect Wi-Fi and LocalDevVPN, then try again.",
-            "If this keeps happening, select a fresh pairing file."
+            "打开 LocalDevVPN 并确认 VPN 已连接。",
+            "确保 LocalDevVPN 使用默认地址 \(DeviceConnectionContext.defaultTargetIPAddress)。",
+            "重新连接 Wi-Fi 和 LocalDevVPN，然后重试。",
+            "如果问题持续存在，请选择新的配对文件。"
         ]
     } else if error.code == -18 || lowercasedMessage.contains("parse target ip") {
-        likelyCause = "The configured target IP address is not valid."
+        likelyCause = "配置的目标 IP 地址无效。"
         recoverySteps = [
-            "Open Settings and check the target IP address.",
-            "Use the default \(DeviceConnectionContext.defaultTargetIPAddress)."
+            "打开设置并检查目标 IP 地址。",
+            "使用默认地址 \(DeviceConnectionContext.defaultTargetIPAddress)。"
         ]
     } else if lowercasedMessage.contains("timed out") || lowercasedMessage.contains("timeout") {
-        likelyCause = "The app could not reach the device before the connection timed out."
+        likelyCause = "应用在连接超时前无法到达设备。"
         recoverySteps = [
-            "Confirm Wi-Fi and LocalDevVPN are both connected.",
-            "Wake and unlock the target device.",
-            "Confirm LocalDevVPN is exposing the device at \(targetIP)."
+            "确认 Wi-Fi 和 LocalDevVPN 均已连接。",
+            "唤醒并解锁目标设备。",
+            "确认 LocalDevVPN 在 \(targetIP) 暴露了设备。"
         ]
     } else if lowercasedMessage.contains("network is unreachable") || lowercasedMessage.contains("no route") {
-        likelyCause = "The VPN route to the device is not available."
+        likelyCause = "到设备的 VPN 路由不可用。"
         recoverySteps = [
-            "Disconnect and reconnect LocalDevVPN.",
-            "Confirm iOS shows the VPN indicator.",
-            "Try switching Wi-Fi off and on."
+            "断开并重新连接 LocalDevVPN。",
+            "确认 iOS 显示 VPN 指示器。",
+            "尝试关闭并重新打开 Wi-Fi。"
         ]
     } else {
-        likelyCause = "The tunnel could not be created."
+        likelyCause = "无法创建隧道。"
         recoverySteps = [
-            "Confirm Wi-Fi and LocalDevVPN are connected.",
-            "Wake and unlock the target device.",
-            "Reconnect LocalDevVPN, then try again."
+            "确认 Wi-Fi 和 LocalDevVPN 已连接。",
+            "唤醒并解锁目标设备。",
+            "重新连接 LocalDevVPN，然后重试。"
         ]
     }
 
@@ -198,13 +198,13 @@ private func tunnelConnectionAlertMessage(for error: NSError) -> String {
     return """
     \(likelyCause)
 
-    Target: \(targetIP):49152
-    Expected LocalDevVPN IP: \(DeviceConnectionContext.defaultTargetIPAddress)
+    目标: \(targetIP):49152
+    预期的 LocalDevVPN IP: \(DeviceConnectionContext.defaultTargetIPAddress)
 
-    Try this:
+    请尝试：
     \(steps)
 
-    Technical details:
-    Code \(error.code): \(rawMessage)
+    技术详情：
+    代码 \(error.code): \(rawMessage)
     """
 }

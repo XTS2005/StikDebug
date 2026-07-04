@@ -15,11 +15,11 @@ struct ProcessInspectorView: View {
     var body: some View {
         NavigationStack {
             content
-                .navigationTitle("Process Inspector")
+                .navigationTitle("进程检查器")
                 .toolbar {
                     ToolbarItem(placement: .navigationBarTrailing) {
                         Button(action: viewModel.refresh) {
-                            Label("Refresh", systemImage: "arrow.clockwise")
+                            Label("刷新", systemImage: "arrow.clockwise")
                         }
                         .disabled(viewModel.isRefreshing)
                     }
@@ -33,13 +33,13 @@ struct ProcessInspectorView: View {
             viewModel.stopAutoRefresh()
         }
         .alert(viewModel.actionAlertTitle, isPresented: $viewModel.showActionAlert) {
-            Button("OK", role: .cancel) { }
+            Button("确定", role: .cancel) { }
         } message: {
             Text(viewModel.actionAlertMessage)
         }
         .alert(viewModel.errorAlertTitle, isPresented: $viewModel.showErrorAlert) {
-            Button("Try Again") { viewModel.refresh() }
-            Button("OK", role: .cancel) { }
+            Button("再试一次") { viewModel.refresh() }
+            Button("确定", role: .cancel) { }
         } message: {
             Text(viewModel.errorAlertMessage)
         }
@@ -48,15 +48,15 @@ struct ProcessInspectorView: View {
     @ViewBuilder
     private var content: some View {
         List {
-            Section("Overview") {
-                LabeledContent("Total Processes") {
+            Section("概述") {
+                LabeledContent("总进程数") {
                     Text("\(viewModel.processes.count)")
                         .font(.title2.bold())
                 }
             }
-            Section("Processes") {
+            Section("进程") {
                 if viewModel.filteredProcesses.isEmpty {
-                    Text("No matching processes.")
+                    Text("没有匹配的进程。")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 } else {
@@ -122,11 +122,11 @@ enum ProcessControlAction: String {
     var buttonLabel: String {
         switch self {
         case .resume:
-            return "Resume"
+            return "恢复"
         case .pause:
-            return "Pause"
+            return "暂停"
         case .kill:
-            return "Kill"
+            return "终止"
         }
     }
 
@@ -155,66 +155,66 @@ enum ProcessControlAction: String {
     var progressTitle: String {
         switch self {
         case .resume:
-            return "Resuming Process"
+            return "正在恢复进程"
         case .pause:
-            return "Pausing Process"
+            return "正在暂停进程"
         case .kill:
-            return "Terminating Process"
+            return "正在终止进程"
         }
     }
 
     var timeoutTitle: String {
         switch self {
         case .resume:
-            return "Resume Timed Out"
+            return "恢复超时"
         case .pause:
-            return "Pause Timed Out"
+            return "暂停超时"
         case .kill:
-            return "Kill Timed Out"
+            return "终止超时"
         }
     }
 
     var failureTitle: String {
         switch self {
         case .resume:
-            return "Resume Failed"
+            return "恢复失败"
         case .pause:
-            return "Pause Failed"
+            return "暂停失败"
         case .kill:
-            return "Kill Failed"
+            return "终止失败"
         }
     }
 
     var successTitle: String {
         switch self {
         case .resume:
-            return "Process Resumed"
+            return "进程已恢复"
         case .pause:
-            return "Process Paused"
+            return "进程已暂停"
         case .kill:
-            return "Process Terminated"
+            return "进程已终止"
         }
     }
 
     func successMessage(for pid: Int) -> String {
         switch self {
         case .resume:
-            return "Sent SIGCONT (19) to PID \(pid)."
+            return "已向 PID %d 发送 SIGCONT (19)。"
         case .pause:
-            return "Sent SIGSTOP (17) to PID \(pid)."
+            return "已向 PID %d 发送 SIGSTOP (17)。"
         case .kill:
-            return "PID \(pid) was terminated."
+            return "PID %d 已终止。"
         }
     }
 
     func timeoutMessage(for pid: Int) -> String {
         switch self {
         case .resume:
-            return "Could not confirm resume for PID \(pid). Try again."
+            return "无法确认 PID %d 的恢复。请重试。"
         case .pause:
-            return "Could not confirm pause for PID \(pid). Try again."
+            return "无法确认 PID %d 的暂停。请重试。"
         case .kill:
-            return "Could not confirm termination for PID \(pid). Try again."
+            return "无法确认 PID %d 的终止。请重试。"
         }
     }
 }
@@ -284,7 +284,7 @@ private struct ProcessRow: View {
                             onKillTap(process)
                         } label: {
                             if isConfirming {
-                                Label("Confirm", systemImage: "checkmark.circle.fill")
+                                Label("确认", systemImage: "checkmark.circle.fill")
                                     .labelStyle(.iconOnly)
                                     .font(.title3)
                             } else {
@@ -375,7 +375,7 @@ final class ProcessInspectorViewModel: ObservableObject {
             let errorMessage = err?.localizedDescription
             await MainActor.run {
                 if let errorMessage {
-                    self.errorAlertTitle = "Failed to Load Processes"
+                    self.errorAlertTitle = "加载进程失败"
                     self.errorAlertMessage = errorMessage
                     self.showErrorAlert = true
                 } else {
@@ -398,11 +398,11 @@ final class ProcessInspectorViewModel: ObservableObject {
 
     func control(_ action: ProcessControlAction, process: ProcessInfoEntry) {
         guard activeControlState == nil else {
-            actionAlertTitle = "Busy"
+            actionAlertTitle = "繁忙"
             if let activeControlState {
-                actionAlertMessage = "\(activeControlState.action.progressTitle) for PID \(activeControlState.pid)."
+                actionAlertMessage = "\(activeControlState.action.progressTitle) for PID \(activeControlState.pid)。"
             } else {
-                actionAlertMessage = "Another process action is already running."
+                actionAlertMessage = "另一个进程操作已在运行中。"
             }
             showActionAlert = true
             return
