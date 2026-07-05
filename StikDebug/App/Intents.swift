@@ -140,7 +140,7 @@ struct EnableJITIntent: AppIntent, ForegroundContinuableIntent {
     static var openAppWhenRun: Bool = true
 
     @Parameter(title: "应用", description: "要启用 JIT 的应用",
-               requestValueDialog: "您想为哪个应用启用 JIT？")
+               requestValueDialog: "你想为哪个应用启用 JIT？")
     var app: InstalledAppEntity?
 
     static var parameterSummary: some ParameterSummary {
@@ -214,7 +214,7 @@ struct KillProcessIntent: AppIntent {
     static var openAppWhenRun: Bool = false
 
     @Parameter(title: "进程", description: "要终止的进程",
-               requestValueDialog: "您想终止哪个进程？")
+               requestValueDialog: "你想终止哪个进程？")
     var process: RunningProcessEntity?
 
     @Parameter(title: "进程 ID", description: "要终止的特定 PID，代替选择进程")

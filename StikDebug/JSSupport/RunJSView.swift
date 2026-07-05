@@ -97,7 +97,7 @@ final class RunJSViewModel: ObservableObject, Identifiable, @unchecked Sendable 
                 self.logs.append(exception.debugDescription)
             }
             self.logs.append("脚本执行完成")
-            self.logs.append("您可以安全地关闭此窗口。")
+            self.logs.append("你可以安全地关闭此窗口。")
         }
     }
     

@@ -321,7 +321,7 @@ struct LaunchAppRow: View {
 
     private var accessibilityValue: String {
         let state = isLaunching ? "正在启动".localized : "就绪".localized
-        return "\(state)，\(String(format: "包名 ID %@".localized, bundleID))"
+        return "\(state), \(String(format: "包名 ID %@".localized, bundleID))"
     }
 
     private func beginIconLoadingIfNeeded() {

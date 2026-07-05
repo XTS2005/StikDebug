@@ -356,7 +356,7 @@ struct HomeView: View {
             } else if let bundleID {
                 success = JITEnableContext.shared.debugApp(withBundleID: bundleID, logger: logger, jsCallback: callback)
             } else {
-                lastDebugMessage = "需要指定 Bundle ID 或 PID。".localized
+                lastDebugMessage = "需要指定包名 ID 或 PID。".localized
                 success = false
             }
 

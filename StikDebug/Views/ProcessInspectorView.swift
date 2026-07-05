@@ -38,7 +38,7 @@ struct ProcessInspectorView: View {
             Text(viewModel.actionAlertMessage)
         }
         .alert(viewModel.errorAlertTitle, isPresented: $viewModel.showErrorAlert) {
-            Button("再试一次") { viewModel.refresh() }
+            Button("重试") { viewModel.refresh() }
             Button("确定", role: .cancel) { }
         } message: {
             Text(viewModel.errorAlertMessage)
@@ -48,7 +48,7 @@ struct ProcessInspectorView: View {
     @ViewBuilder
     private var content: some View {
         List {
-            Section("概述") {
+            Section("总览") {
                 LabeledContent("总进程数") {
                     Text("\(viewModel.processes.count)")
                         .font(.title2.bold())

@@ -158,7 +158,7 @@ struct ProfileView: View {
                             if let match = entry.bestMatchingProfile {
                                 HStack {
                                     Image(systemName: "clock")
-                                    Text("过期：\(match.profile.formattedDate)")
+                                    Text("过期时间：\(match.profile.formattedDate)")
                                 }
                                 .foregroundStyle(match.profile.dateColor)
                                 .font(.subheadline)
@@ -232,7 +232,7 @@ struct ProfileView: View {
                 }
             }
             .listStyle(.insetGrouped)
-            .navigationTitle("应用过期")
+            .navigationTitle("应用过期时间")
             .toolbar {
                 ToolbarItemGroup(placement: .navigationBarTrailing) {
                     Button {

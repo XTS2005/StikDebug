@@ -107,7 +107,7 @@ final class TunnelManager: ObservableObject {
 
         showAlert(
             title: "无效的配对文件",
-            message: "配对文件可能无效或已过期。您可以导入新的配对文件来替换它。",
+            message: "配对文件可能无效或已过期。你可以导入新的配对文件来替换它。",
             showOk: true,
             showTryAgain: false,
             primaryButtonText: "选择新文件"

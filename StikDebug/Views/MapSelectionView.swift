@@ -828,7 +828,7 @@ struct LocationSimulationView: View {
             return "路线已就绪。"
         }
         if routeStartSelection != nil || routeEndSelection != nil {
-            return "选择两个路线端点以构建驾驶路线。"
+            return "选择两个路线端点以生成驾驶路线。"
         }
         return "从工具栏规划路线。"
     }
@@ -1680,7 +1680,7 @@ private struct RouteSearchSheet: View {
                     }
                     .frame(maxHeight: 260)
                 } else {
-                    Text("搜索起点和目的地以构建路线。")
+                    Text("搜索起点和目的地以生成路线。")
                         .font(.footnote)
                         .foregroundStyle(.secondary)
                 }

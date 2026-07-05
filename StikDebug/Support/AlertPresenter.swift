@@ -22,7 +22,7 @@ enum AlertPresenter {
             let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
 
             if showTryAgain {
-                alert.addAction(UIAlertAction(title: primaryButtonText ?? "再试一次", style: .default) { _ in
+                alert.addAction(UIAlertAction(title: primaryButtonText ?? "重试", style: .default) { _ in
                     completion?(true)
                 })
                 alert.addAction(UIAlertAction(title: "取消", style: .cancel) { _ in
