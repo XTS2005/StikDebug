@@ -37,7 +37,7 @@
 				<string>com.apple.package</string>
 			</array>
 			<key>UTTypeDescription</key>
-			<string>StikDebug Mini Tool</string>
+			<string>StikDebug 迷你工具</string>
 			<key>UTTypeIconFiles</key>
 			<array/>
 			<key>UTTypeIdentifier</key>

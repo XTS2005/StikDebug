@@ -46,7 +46,7 @@ struct ScriptEditorView: View {
         .onAppear(perform: loadScript)
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
-                Button("Save") {
+                Button("保存") {
                     saveScript()
                     dismiss()
                 }
